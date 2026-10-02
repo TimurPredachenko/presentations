@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Язык+ · Собрание для родителей</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Стиль — линейка «Kemer Field Notes»: бумага полевого дневника, сосна, оранжевый акцент.
+   Syne не умеет кириллицу, поэтому заголовки набраны Unbounded — тот же широкий гротеск. */
+:root{
+  /* цвета сайта Язык+: фирменный синий, белый, светло-голубой */
+  --paper:#FFFFFF;
+  --paper-2:#EFF7FB;
+  --ink:#1C2024;
+  --ink-2:#4A525A;
+  --ink-3:#7D868F;
+  --rule:#E3E6E9;
+
+  --pine:#1887C8;       /* синие блоки, как шапка сайта */
+  --pine-2:#3194CE;
+  --orange:#1887C8;     /* акцент на светлом фоне */
+  --sky:#7CC4EE;        /* акцент на тёмном фото */
+  --on:#FFFFFF;         /* текст на синем */
+  --on-2:rgba(255,255,255,.84);
+  --on-3:rgba(255,255,255,.62);
+  --on-line:rgba(255,255,255,.3);
+  --night:#1C2024;      /* подложка под фото обложки */
+  --lime:#A6CE54;       /* фирменный зелёный Язык+ */
+
+  --display:"Unbounded","Trebuchet MS",system-ui,sans-serif;
+  --body:"Manrope","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",Menlo,monospace;
+
+  --gut:clamp(20px,5vw,72px);
+  --maxw:1440px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:clamp(19px,1.35vw,27px);line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+section{position:relative}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.025em;margin:0;text-wrap:balance;overflow-wrap:break-word;hyphens:manual}
+.xl{font-size:clamp(34px,8.51vw,119.6px);line-height:.98;text-transform:uppercase}
+.lg{font-size:clamp(26px,5.29vw,71.3px);line-height:1.02;text-transform:uppercase}
+.md{font-size:clamp(22px,3.4vw,46px);line-height:1.12;font-weight:700}
+p{max-width:60ch;margin:0;color:var(--ink-2)}
+
+.tag{font-family:var(--mono);font-size:15.6px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--orange);margin:0 0 18px;display:block}
+
+/* индекс глав слева */
+.index{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:50;
+  font-family:var(--mono);font-size:14.3px;letter-spacing:.1em;color:var(--ink-3);
+  display:flex;flex-direction:column;gap:9px;mix-blend-mode:difference;filter:invert(1)}
+.index b{color:var(--orange);font-weight:500}
+@media (max-width:900px){.index{display:none}}
+
+/* ─── слоты под фото, которых пока нет ─── */
+.slot{position:relative;overflow:hidden}
+.slot__ph{display:none;position:absolute;inset:0;background:var(--pine-2);color:var(--on-2);
+  padding:clamp(16px,2vw,24px);flex-direction:column;justify-content:space-between;
+  font-family:var(--mono);font-size:15.6px;letter-spacing:.08em;text-transform:uppercase}
+.slot__ph::before{content:"";position:absolute;inset:10px;border:1px dashed var(--on-line);pointer-events:none}
+.slot__ph b{font-family:var(--display);font-weight:800;font-size:clamp(34px,4.6vw,64.4px);color:var(--on);letter-spacing:-.03em;line-height:1}
+.slot__ph small{font-size:14.3px;color:var(--on-3);text-transform:none;letter-spacing:.04em}
+.slot.is-empty img{visibility:hidden}
+.slot.is-empty .slot__ph{display:flex}
+.slot--light .slot__ph{background:var(--paper-2);color:var(--ink-2)}
+.slot--light .slot__ph b{color:var(--orange)}
+.slot--light .slot__ph::before{border-color:var(--ink-3)}
+.slot--light .slot__ph small{color:var(--ink-3)}
+
+/* ─── обложка ─── */
+.cover{min-height:100svh;display:grid;grid-template-rows:1fr auto;background:var(--night);color:var(--on);overflow:hidden}
+.cover .tag{color:var(--sky)}
+.cover__media{position:absolute;inset:0;overflow:hidden}
+.cover__media img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:.62}
+.cover__in{position:relative;z-index:3;align-self:end;padding:var(--gut);max-width:1400px}
+.cover__in h1{color:var(--on)}
+.cover__in h1 em{font-style:normal;color:var(--sky)}
+.cover__meta{display:flex;gap:clamp(12px,2.4vw,30px);flex-wrap:wrap;margin-top:22px;
+  font-family:var(--mono);font-size:clamp(13.75px,1.75vw,16.25px);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--on-2)}
+.cover__meta span{padding:5px 0;border-top:2px solid var(--orange)}
+
+/* ─── бегущая строка ─── */
+.ticker{background:var(--pine);color:var(--on);overflow:hidden;padding-block:14px;position:relative;z-index:4}
+.ticker__row{display:flex;width:max-content;animation:slide 30s linear infinite}
+.ticker span{font-family:var(--display);font-weight:800;font-size:clamp(18px,3.45vw,39.1px);
+  text-transform:uppercase;letter-spacing:-.01em;padding-inline:.4em;white-space:nowrap}
+.ticker i{font-style:normal;opacity:.55;padding-inline:.2em}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker__row{animation:none}}
+
+/* ─── блоки ─── */
+.pad{padding-block:clamp(70px,11vh,140px)}
+.dark{background:var(--pine);color:var(--on)}
+.dark h2{color:var(--on)}
+.dark p{color:var(--on-2)}
+.dark .tag,.rail .tag,.end .tag,.film .tag,.curtain .tag{color:var(--on-2)}
+.tint{background:var(--paper-2)}
+.orange{background:var(--paper-2);color:var(--ink)}
+.orange p{color:var(--ink-2)}
+
+.reveal .w{display:inline-block;overflow:hidden;vertical-align:top}
+.reveal .w i{display:inline-block;font-style:inherit;will-change:transform}
+
+/* ─── соцсети ─── */
+.qr{display:grid;grid-template-columns:repeat(3,minmax(0,330px));gap:clamp(18px,3vw,48px);margin-top:clamp(30px,5vh,54px)}
+.qr__card{border-top:2px solid var(--ink);padding-top:16px;color:inherit;text-decoration:none;display:block}
+.qr__card:hover .qr__go,.qr__card:focus-visible .qr__go{color:var(--ink)}
+.qr__card:focus-visible{outline:2px solid var(--pine);outline-offset:6px}
+.qr__go{display:block;margin-top:12px;font-family:var(--mono);font-size:15.6px;letter-spacing:.04em;color:var(--orange);overflow-wrap:anywhere}
+.qr__card .slot{aspect-ratio:1;background:#fff;margin-top:14px}
+.qr__card .slot img{width:100%;height:100%;object-fit:contain;padding:7%}
+.qr__name{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.qr__name b{font-family:var(--display);font-weight:800;font-size:clamp(22.5px,2.75vw,32.5px);text-transform:uppercase;letter-spacing:-.02em}
+.qr__name i{font-style:normal;font-family:var(--mono);font-size:15.6px;color:var(--ink-3)}
+
+/* ─── числа: строки, а не плитки ─── */
+.nums{margin-top:clamp(28px,5vh,54px);border-top:1px solid var(--rule)}
+.dark .nums{border-top-color:var(--on-line)}
+.num{display:grid;grid-template-columns:clamp(58px,7vw,88px) minmax(0,1fr) auto;
+  gap:clamp(14px,3vw,36px);align-items:baseline;padding:clamp(16px,2.4vh,26px) 0;
+  border-bottom:1px solid var(--rule)}
+.dark .num{border-bottom-color:var(--on-line)}
+.dark .num .v{color:var(--on)}
+.num .i{font-family:var(--mono);font-size:15.6px;color:var(--ink-3)}
+.dark .num .i{color:var(--on-3)}
+.num .t{font-family:var(--body);font-weight:600;font-size:clamp(18.75px,2.25vw,23.75px)}
+.num .t small{display:block;font-weight:500;font-size:.82em;color:var(--ink-3);margin-top:2px}
+.dark .num .t small{color:var(--on-3)}
+.num .v{font-family:var(--display);font-weight:800;font-size:clamp(30px,5.98vw,78.2px);
+  line-height:.9;letter-spacing:-.04em;color:var(--orange);font-variant-numeric:tabular-nums;white-space:nowrap}
+.num .v u{text-decoration:none;font-size:.38em;letter-spacing:0;margin-left:.15em;color:inherit}
+.num .v.is-todo{color:var(--ink-3)}
+.num .v.is-todo::after{content:"уточнить";display:block;font-family:var(--mono);font-size:14.3px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-top:8px;text-align:right}
+.num--word .v{font-size:clamp(16.25px,1.62vw,18.75px);font-family:var(--mono);font-weight:500;letter-spacing:.1em;text-transform:uppercase;line-height:1.3}
+
+/* состав команды — полоса 14/7/5 */
+.team{margin-top:clamp(26px,4vh,40px)}
+.team__bar{display:flex;height:clamp(40px,6vh,58px);gap:3px}
+.team__bar span{display:flex;align-items:center;padding-inline:14px;font-family:var(--display);font-weight:800;font-size:clamp(18.75px,2.25vw,25px);transform-origin:left center}
+.team__bar span:nth-child(1){flex:14;background:var(--pine);color:var(--on)}
+.team__bar span:nth-child(2){flex:7;background:var(--sky);color:var(--ink)}
+.team__bar span:nth-child(3){flex:5;background:var(--paper-2);color:var(--ink);outline:1px solid var(--rule);outline-offset:-1px}
+.team__legend{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:12px;font-family:var(--mono);font-size:15.6px;letter-spacing:.06em;color:var(--ink-3)}
+.team__legend b{color:var(--ink);font-weight:500}
+
+/* ─── видео: кадр раскрывается ─── */
+.film{height:210svh;background:var(--pine)}
+.film__sticky{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center}
+.film__frame{position:absolute;inset:0;background:#0F5E8D}
+.film__frame video{width:100%;height:100%;object-fit:cover;display:block}
+.film__ph{display:none;position:absolute;inset:0;place-items:center;text-align:center;padding:var(--gut);
+  background:repeating-linear-gradient(135deg,var(--pine-2) 0 22px,var(--pine) 22px 44px)}
+.film.is-empty video{display:none}
+.film.is-empty .film__ph{display:grid}
+.film__ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.film__ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,32,36,.15),rgba(28,32,36,.45))}
+.film__ph span{position:absolute;left:0;right:0;bottom:clamp(24px,6vh,56px);font-family:var(--mono);font-size:15.6px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-2)}
+.film__cap{position:relative;z-index:4;text-align:center;padding-inline:var(--gut);color:var(--on);pointer-events:none;
+  text-shadow:0 2px 26px rgba(0,0,0,.45)}
+.film__cap h2{color:var(--on)}
+.film__play{position:absolute;z-index:6;left:50%;bottom:clamp(28px,8vh,70px);transform:translateX(-50%);
+  display:flex;align-items:center;gap:12px;border:0;cursor:pointer;background:var(--on);color:var(--pine);
+  font-family:var(--mono);font-size:16.9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:14px 22px 14px 18px}
+.film__play::before{content:"";width:0;height:0;border-left:12px solid currentColor;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.film.is-playing .film__play::before{width:10px;height:14px;border:0;border-left:3px solid currentColor;border-right:3px solid currentColor}
+.film.is-empty .film__play{display:none}
+.motion .film__frame{clip-path:inset(20% 22% 20% 22%);will-change:clip-path}
+
+/* ─── закреплённый сплит: ценности ─── */
+.acts{height:100svh}
+.acts__stage{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.acts__media{position:relative;overflow:hidden}
+.acts__media .lay{position:absolute;inset:0}
+.acts__media .lay img{width:100%;height:100%;object-fit:cover}
+.acts__panel{position:relative;background:var(--pine);color:var(--on);
+  display:grid;align-items:center;padding:clamp(30px,5vw,84px)}
+.act{grid-area:1/1}
+.act .no{font-family:var(--mono);font-size:15.6px;letter-spacing:.14em;color:var(--on-2);display:block;margin-bottom:16px;text-transform:uppercase}
+.act h2{color:var(--on)}
+.act p{color:var(--on-2);margin-top:16px}
+.acts__dots{position:absolute;left:clamp(30px,5vw,84px);bottom:clamp(24px,5vh,48px);display:flex;gap:8px}
+.acts__dots i{width:28px;height:3px;background:var(--on-line)}
+.acts__dots i.on{background:var(--on)}
+
+/* ─── сплит ─── */
+.split{min-height:100svh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.split__media{position:relative;overflow:hidden;min-height:100%}
+.split__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.split__panel{display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(30px,5vw,84px);position:relative;z-index:2}
+.split--flip .split__media{order:2}
+
+/* ─── мозг и класс ─── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.8vw,22px);margin-top:clamp(30px,5vh,54px)}
+.duo figure{margin:0}
+.duo .frame{aspect-ratio:4/3.4;overflow:hidden;position:relative}
+.duo .frame img{width:100%;height:100%;object-fit:cover}
+.duo .frame--brain{background:var(--paper-2);display:grid;place-items:center}
+.duo .frame--brain svg{width:78%;height:auto}
+.duo figcaption{margin-top:11px;font-family:var(--mono);font-size:15.6px;letter-spacing:.06em;color:var(--ink-3)}
+.brain-line{fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── спецификация: моноширинные строки ─── */
+.spec{margin-top:clamp(26px,4vh,46px)}
+.spec__h{font-family:var(--display);font-weight:700;font-size:clamp(18.75px,2.25vw,25px);
+  text-transform:uppercase;letter-spacing:-.01em;padding-bottom:12px;border-bottom:2px solid var(--ink)}
+.dark .spec__h{border-bottom-color:var(--paper)}
+.spec__row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:baseline;
+  padding:14px 0;border-bottom:1px solid var(--rule);font-size:clamp(18px,1.25vw,25px)}
+.spec__row b{font-weight:700}
+.dark .spec__row{border-bottom-color:var(--on-line)}
+.dark .spec__row i{color:var(--on-2)}
+.dark .spec__h{border-bottom-color:var(--on)}
+.spec__row i{font-style:normal;font-family:var(--mono);font-size:16.9px;color:var(--orange);white-space:nowrap;text-align:right}
+.orange .spec__row{border-bottom-color:var(--rule)}
+.orange .spec__row i{color:var(--orange)}
+
+/* ─── занавес ─── */
+.curtain{height:140svh}
+.curtain__sticky{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center}
+.curtain__frame{position:absolute;inset:0}
+.curtain__frame img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.curtain__frame::after{content:"";position:absolute;inset:0;background:rgba(28,32,36,.38)}
+.curtain__base{position:absolute;inset:0;background:var(--pine);display:none;place-items:center;padding:var(--gut)}
+.curtain__base h2{color:var(--on);text-align:center}
+.curtain__over{position:relative;z-index:4;text-align:center;padding-inline:var(--gut);color:var(--on);
+  text-shadow:0 2px 26px rgba(0,0,0,.55)}
+.curtain__over h2{color:var(--on)}
+.curtain__over{align-self:end;padding-bottom:clamp(40px,11vh,120px)}
+.motion .curtain__base{display:grid}
+.motion .curtain__frame{clip-path:inset(100% 0 0 0);will-change:clip-path}
+.motion .curtain__over{opacity:0}
+
+/* ─── бот ─── */
+.phone{position:absolute;inset:0;display:grid;place-items:center;background:var(--paper-2)}
+.phone__body{width:min(300px,62%);aspect-ratio:9/18.5;background:var(--ink);border-radius:34px;padding:10px;box-shadow:0 30px 60px -30px rgba(20,18,16,.5)}
+.phone__screen{height:100%;border-radius:26px;background:var(--paper-2);display:flex;flex-direction:column;overflow:hidden}
+.phone__top{background:var(--pine);color:var(--on);padding:26px 14px 12px;display:flex;align-items:center;gap:10px}
+.phone__ava{width:30px;height:30px;border-radius:50%;background:var(--on);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:16.9px;color:var(--pine)}
+.phone__top b{font-size:16.9px;display:block;line-height:1.2}
+.phone__top small{font-family:var(--mono);font-size:12.35px;opacity:.6;letter-spacing:.06em}
+.phone__chat{flex:1;padding:12px;display:flex;flex-direction:column;gap:8px;justify-content:flex-end}
+.msg{background:#fff;border-radius:12px 12px 12px 3px;padding:9px 11px;font-size:14.95px;line-height:1.35;color:var(--ink);max-width:92%}
+.msg b{display:block;font-family:var(--mono);font-size:12.35px;font-weight:500;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin-bottom:3px}
+.msg em{font-style:normal;font-family:var(--display);font-weight:800;color:var(--orange);font-size:18.75px}
+.msg .bar{height:5px;background:var(--paper-2);margin-top:6px}
+.msg .bar i{display:block;height:100%;background:var(--pine)}
+.msg--me{align-self:flex-end;background:var(--pine);color:var(--on);border-radius:12px 12px 3px 12px}
+.phone__note{position:absolute;left:clamp(16px,2vw,26px);top:clamp(16px,2vw,26px);font-family:var(--mono);font-size:14.3px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ─── колонки мероприятий ─── */
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.4vw,30px);margin-top:clamp(30px,5vh,54px)}
+.col{border-top:2px solid var(--ink);padding-top:18px;display:flex;flex-direction:column;gap:12px}
+.col .i{font-family:var(--mono);font-size:15.6px;color:var(--orange);letter-spacing:.1em}
+.col h3{font-size:clamp(23.75px,2.75vw,35px);line-height:1.08;text-transform:uppercase}
+.col p{font-size:clamp(18px,1.25vw,25px)}
+.col .where{margin-top:auto;padding-top:12px;font-family:var(--mono);font-size:15.6px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ─── best student / best group ─── */
+.best{display:grid;gap:0;margin-top:clamp(22px,4vh,36px);border-top:1px solid var(--rule)}
+.best div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:16px;padding:clamp(14px,2.2vh,22px) 0;border-bottom:1px solid var(--rule)}
+.best b{font-family:var(--display);font-weight:800;font-size:clamp(24px,4.14vw,55.2px);letter-spacing:-.03em;line-height:1;text-transform:uppercase;color:var(--pine)}
+.best i{font-style:normal;font-family:var(--mono);font-size:15.6px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ─── уровни ─── */
+.cefr{margin-top:clamp(28px,5vh,50px);border-top:1px solid var(--rule)}
+.lvl{display:grid;grid-template-columns:clamp(58px,7vw,88px) minmax(0,1fr) minmax(0,1.1fr);gap:clamp(14px,3vw,36px);align-items:center;
+  padding:clamp(12px,1.8vh,18px) 0;border-bottom:1px solid var(--rule)}
+.lvl b{font-family:var(--display);font-weight:800;font-size:clamp(24px,3.91vw,48.3px);letter-spacing:-.03em;line-height:1;color:var(--orange)}
+.lvl .n{font-weight:700;font-size:clamp(18.75px,2.12vw,22.5px);line-height:1.3}
+.lvl .n small{display:block;font-weight:500;color:var(--ink-3);font-size:.86em;margin-top:2px}
+.lvl .bar{height:10px;background:var(--rule)}
+.lvl .bar i{display:block;height:100%;background:var(--pine);transform-origin:left center}
+.groupnote{margin-top:18px;font-family:var(--mono);font-size:15.6px;letter-spacing:.06em;color:var(--ink-3)}
+
+/* ─── лента ─── */
+.rail{overflow:hidden;background:var(--pine)}
+.rail__head{padding:clamp(54px,8vh,90px) var(--gut) 0;max-width:var(--maxw);margin:0 auto;color:var(--on)}
+.rail__head h2{color:var(--on)}
+.rail__head p{color:var(--on-2);margin-top:16px}
+.rail__track{display:flex;gap:clamp(12px,1.8vw,22px);padding:clamp(36px,6vh,64px) var(--gut);width:max-content;will-change:transform}
+.rail__card{width:clamp(210px,24vw,310px);flex:0 0 auto}
+.rail__card .slot{width:100%;aspect-ratio:4/5}
+.rail__card .slot img{width:100%;height:100%;object-fit:cover}
+.rail__card > span{display:block;margin-top:11px;font-family:var(--mono);font-size:15.6px;
+  letter-spacing:.06em;color:var(--on-2)}
+
+/* ─── финал ─── */
+.end{background:var(--pine);color:var(--on);padding-block:clamp(80px,15vh,170px)}
+.end__grid{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(24px,5vw,64px);align-items:end}
+.end h2{color:var(--on)}
+.end h2 em{font-style:normal;color:var(--paper-2);opacity:.75}
+.end p{color:var(--on-2)}
+.end .cert{border:2px solid var(--on);padding:clamp(22px,3vw,34px)}
+.end .cert b{font-family:var(--mono);font-size:15.6px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-2);display:block;margin-bottom:10px;font-weight:500}
+.end .foot{margin-top:clamp(40px,7vh,80px);padding-top:20px;border-top:1px solid var(--on-line);
+  font-family:var(--mono);font-size:15.6px;letter-spacing:.08em;color:var(--on-3);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+/* ─── личный кабинет во весь экран ─── */
+.shot{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--pine);display:grid;place-items:center}
+.shot__bg{position:absolute;inset:-60px;width:calc(100% + 120px);height:calc(100% + 120px);max-width:none;object-fit:cover;filter:blur(30px) saturate(1.1);opacity:.9}
+.shot__img{position:relative;z-index:2;width:min(92vw,calc(100svh - 48px));aspect-ratio:1;object-fit:contain;box-shadow:0 30px 80px -30px rgba(12,40,70,.55)}
+
+/* ─── два столбца спецификаций ─── */
+.spec2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px)}
+
+/* ─── Bullet Journal ─── */
+.journal__grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(30px,5vw,80px);align-items:center}
+.journal__pics{position:relative;aspect-ratio:1/1.08;width:100%;max-width:560px;margin-inline:auto}
+.journal__pics img{position:absolute;box-shadow:0 24px 50px -24px rgba(28,32,36,.45)}
+.journal__cover{left:0;top:0;width:62%;transform:rotate(-4deg)}
+.journal__page{right:0;bottom:0;width:56%;transform:rotate(3deg);background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips span{padding:6px 14px;border-radius:999px;border:1px solid var(--pine);color:var(--pine);font-size:clamp(16px,1.05vw,21px);font-weight:600}
+
+/* ─── зелёный блок «О чём стоит задуматься» ─── */
+.lime{background:var(--lime);color:var(--ink)}
+.lime h2{color:var(--ink)}
+.lime p{color:rgba(28,32,36,.78)}
+.lime .tag{color:rgba(28,32,36,.72)}
+.lime .nums{border-top-color:rgba(28,32,36,.22)}
+.lime .num{border-bottom-color:rgba(28,32,36,.22)}
+.lime .num .i{color:rgba(28,32,36,.55)}
+.lime .num .v{color:var(--ink)}
+
+/* ─── видео «жизнь школы» ─── */
+.reel__grid{display:grid;grid-template-columns:1fr auto;gap:clamp(30px,6vw,96px);align-items:center}
+.reel__meta{display:block;margin-top:22px;font-family:var(--mono);font-size:15.6px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-3)}
+.reel__error{margin-top:16px;color:#ffd8cf;font-family:var(--mono);font-size:14px;line-height:1.45}
+.reel__frame{position:relative;width:min(340px,78vw);aspect-ratio:9/16;border-radius:30px;overflow:hidden;background:#0F5E8D;border:8px solid var(--ink);box-shadow:0 34px 80px -34px rgba(0,0,0,.6)}
+.reel__frame video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.reel__play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;border:0;cursor:pointer;background:var(--on);box-shadow:0 12px 30px -10px rgba(0,0,0,.5);display:grid;place-items:center}
+.reel__play::before{content:"";margin-left:6px;border-left:26px solid var(--pine);border-top:16px solid transparent;border-bottom:16px solid transparent}
+.reel__play:focus-visible{outline:3px solid var(--sky);outline-offset:4px}
+.reel.is-playing .reel__play{display:none}
+
+/* ─── плакат геймификации ─── */
+.poster-wrap{display:grid;place-items:center;background:var(--paper-2);padding:clamp(16px,3vw,40px)}
+.poster{container-type:inline-size;position:relative;contain:paint;width:min(100%,calc((100svh - 64px) * .78));aspect-ratio:.78;
+  background:var(--pine);color:var(--on);border-radius:18px;padding:5%;box-shadow:0 30px 70px -34px rgba(12,40,70,.55);display:flex;flex-direction:column}
+.poster::after{content:"+";position:absolute;right:-.08em;top:-.32em;font-family:var(--display);font-weight:800;font-size:clamp(160px,25.3vw,391px);line-height:1;color:rgba(255,255,255,.08);pointer-events:none}
+.poster__top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:max(11.2px,1.98cqw);letter-spacing:.14em;text-transform:uppercase;color:var(--on-2)}
+.poster__h{position:relative;z-index:1;font-family:var(--display);font-weight:800;font-size:max(22px,6cqw);line-height:1.04;letter-spacing:-.02em;text-transform:uppercase;margin-top:3cqw;color:var(--on)}
+.poster__h em{font-style:normal;color:var(--lime)}
+.poster__sub{font-size:max(13.44px,2.42cqw);line-height:1.4;color:var(--on-2);margin-top:1.8cqw;max-width:none}
+.poster__label{margin-top:3cqw;}
+.poster__sub + .poster__label{margin-top:auto;padding-top:2.6cqw}
+.poster__label{font-family:var(--mono);font-size:max(11.2px,1.93cqw);letter-spacing:.14em;text-transform:uppercase;color:var(--lime);padding-bottom:1cqw;border-bottom:1px solid var(--on-line)}
+.poster__earn{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:4cqw}
+.poster__earn li{display:flex;justify-content:space-between;align-items:center;gap:1.5cqw;padding:1.05cqw 0;border-bottom:1px solid rgba(255,255,255,.16);font-size:max(12.32px,2.09cqw);line-height:1.22;font-weight:600}
+.poster__earn b{flex:none;font-family:var(--display);font-weight:800;font-size:max(12.32px,2.2cqw);background:var(--lime);color:var(--ink);border-radius:999px;padding:.45cqw 1.3cqw}
+.poster__shop{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8cqw;margin-top:2.2cqw}
+.poster__shop figure{margin:0;background:#fff;border-radius:10px;padding:1.5cqw 1cqw;display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.split__media .poster__shop img{position:static;inset:auto;height:11.5cqw;width:100%;object-fit:contain}
+.poster__shop b{font-family:var(--display);font-weight:800;font-size:max(14.56px,3.08cqw);color:var(--pine);line-height:1}
+.poster__shop small{font-size:max(11.2px,1.71cqw);color:var(--ink-2);text-align:center;line-height:1.2}
+
+/* без анимаций (нет интернета / reduced motion) — всё стоит статично */
+html:not(.motion) .film,html:not(.motion) .curtain{height:auto}
+html:not(.motion) .film__sticky,html:not(.motion) .curtain__sticky{position:relative}
+html:not(.motion) .acts{height:auto}
+html:not(.motion) .acts__stage{height:auto}
+html:not(.motion) .acts__media .lay:not(:first-child){display:none}
+html:not(.motion) .acts__media{min-height:60svh}
+html:not(.motion) .acts__panel{align-content:center;gap:clamp(30px,5vh,48px)}
+html:not(.motion) .act{grid-area:auto}
+html:not(.motion) .acts__dots{display:none}
+
+@media (max-width:900px){
+  .journal__grid{grid-template-columns:1fr}
+  .split,.acts__stage{grid-template-columns:1fr}
+  .split{min-height:0}
+  .split__media{min-height:56svh}
+  .split--flip .split__media{order:0}
+  .acts__stage{grid-template-rows:44svh 1fr}
+  .end__grid,.cols{grid-template-columns:1fr}
+  .qr{gap:10px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .qr__go{display:none}
+  .qr__name i{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:14.3px}
+  .qr__name{flex-direction:column;gap:2px}
+  .qr__name b{font-size:clamp(11px,3.2vw,16px)}
+}
+@media (max-width:640px){
+  .spec2,.journal__grid{grid-template-columns:1fr}
+  .reel__grid{grid-template-columns:1fr;justify-items:center}
+  .poster{aspect-ratio:auto;width:100%}
+  .poster__earn{grid-template-columns:1fr}
+  .split__media .poster__shop img{height:52px}
+  .poster__sub + .poster__label{margin-top:4cqw}
+  .shot{height:auto;min-height:0;padding-block:clamp(36px,8vh,60px)}
+  .duo{grid-template-columns:1fr}
+  .lvl{grid-template-columns:48px minmax(0,1fr)}
+  .lvl .bar{grid-column:2}
+}
+@media (max-width:560px){
+  .num{grid-template-columns:34px minmax(0,1fr);row-gap:8px}
+  .num .v{grid-column:2}
+  .num .v.is-todo::after{text-align:left}
+  .team__bar span{padding-inline:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="index" aria-hidden="true">
+  <span data-idx>01</span><b>—</b><span>13</span>
+</div>
+
+<!-- 01 ─── ОБЛОЖКА ─── -->
+<section class="cover" data-chapter="01">
+  <div class="cover__media" data-cover-media><img src="media/cover.jpg" alt="Рюкзаки и тетради Язык+ на траве"></div>
+  <div class="cover__in" data-cover-text>
+    <span class="tag">Собрание для родителей · сентябрь 2026</span>
+    <h1 class="xl">Язык<em>+</em><br>Живём<br><em>языком</em></h1>
+    <div class="cover__meta">
+      <span>Сентябрь 2026</span><span>Учебный год 2026/27</span><span>Для родителей</span>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__row">
+    <span>Говорим свободно<i>◆</i>Двигаемся на уроке<i>◆</i>Растём в проектах<i>◆</i>Живём языком<i>◆</i></span>
+    <span>Говорим свободно<i>◆</i>Двигаемся на уроке<i>◆</i>Растём в проектах<i>◆</i>Живём языком<i>◆</i></span>
+  </div>
+</div>
+
+<!-- 02 ─── СОЦСЕТИ ─── -->
+<section class="pad tint" data-chapter="02">
+  <div class="wrap">
+    <span class="tag">Не теряемся</span>
+    <h2 class="lg">Наведите камеру</h2>
+    <p style="margin-top:18px">Анонсы клубов и лагерей, фото с уроков и новости школы — всё сначала появляется в наших каналах.</p>
+    <div class="qr">
+      <a class="qr__card" href="https://t.me/languageplus21" target="_blank" rel="noopener">
+        <div class="qr__name"><b>Telegram</b><i>@languageplus21</i></div>
+        <div class="slot slot--light"><img src="media/qr-telegram.png" alt="QR-код Telegram-канала @languageplus21" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>QR</b><small>media/qr-telegram.png</small></div></div>
+        <span class="qr__go">t.me/languageplus21 →</span>
+      </a>
+      <a class="qr__card" href="https://vk.ru/languageplus" target="_blank" rel="noopener">
+        <div class="qr__name"><b>ВКонтакте</b><i>languageplus</i></div>
+        <div class="slot slot--light"><img src="media/qr-vk.png" alt="QR-код сообщества Язык Плюс ВКонтакте" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>QR</b><small>media/qr-vk.png</small></div></div>
+        <span class="qr__go">vk.ru/languageplus →</span>
+      </a>
+      <a class="qr__card" href="https://max.ru/id2130134545_biz" target="_blank" rel="noopener">
+        <div class="qr__name"><b>MAX</b><i>Язык Плюс › Инфо</i></div>
+        <div class="slot slot--light"><img src="media/qr-max.png" alt="QR-код канала «Язык Плюс › Инфо» в MAX" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>QR</b><small>media/qr-max.png</small></div></div>
+        <span class="qr__go">max.ru/id2130134545_biz →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 02b ─── ВИДЕО: жизнь школы ─── -->
+<section class="dark pad reel">
+  <div class="wrap reel__grid">
+    <div>
+      <span class="tag">Жизнь школы</span>
+      <h2 class="lg">Минута из жизни Язык+</h2>
+      <p style="margin-top:18px">Уроки, игры и перемены — как это выглядит изнутри. Нажмите, чтобы посмотреть.</p>
+      <span class="reel__meta">видео · 57 сек · со звуком</span>
+      <p class="reel__error" data-reel-error role="status" aria-live="polite" hidden>Видео не загрузилось. Обновите страницу и попробуйте снова.</p>
+    </div>
+    <div class="reel__frame" data-reel>
+      <video src="media/school-video.mp4" poster="media/school-video.jpg" preload="metadata" controls playsinline webkit-playsinline></video>
+      <button class="reel__play" type="button" data-reel-play aria-label="Смотреть видео"></button>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ─── ЦИФРЫ ─── -->
+<section class="pad" data-chapter="03">
+  <div class="wrap">
+    <span class="tag">Учебный год 2025/26</span>
+    <h2 class="lg">Язык+ в цифрах</h2>
+    <div class="nums">
+      <div class="num"><span class="i">01</span><span class="t">Учеников отучилось у нас в 2025/26 учебном году</span><span class="v" data-count="715">0</span></div>
+      <div class="num"><span class="i">02</span><span class="t">Ведущие преподаватели и методисты<small>опыт работы от 4 до 20 лет</small></span><span class="v" data-count="14">0</span></div>
+      <div class="num"><span class="i">03</span><span class="t">Преподаватели второго года в Язык+</span><span class="v" data-count="7">0</span></div>
+      <div class="num"><span class="i">04</span><span class="t">Новые преподаватели в команде</span><span class="v" data-count="5">0</span></div>
+    </div>
+    <div class="team">
+      <div class="team__bar" data-team><span>14</span><span>7</span><span>5</span></div>
+      <div class="team__legend"><span><b>26</b> преподавателей в команде</span><span><i style="font-style:normal;color:var(--pine)">■</i> ведущие и методисты</span><span><i style="font-style:normal;color:var(--sky)">■</i> второй год</span><span>□ новички</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 ─── ЦЕННОСТИ: сначала видео ─── -->
+<section class="film" data-film data-chapter="04">
+  <div class="film__sticky">
+    <div class="film__frame" data-film-frame>
+      <!-- положите ролик из дипломной работы в media/values.mp4 -->
+      <video src="media/values.mp4" poster="media/film.jpg" preload="metadata" controls playsinline webkit-playsinline data-video></video>
+      <!-- пока ролика нет, в кадре стоит фото урока: media/film.jpg -->
+      <div class="film__ph"><img src="media/film.jpg" alt="Урок в Язык+: преподаватель и группа за столом"><span>Видео появится после загрузки файла</span></div>
+    </div>
+    <div class="film__cap" data-film-cap>
+      <span class="tag">Наши ценности</span>
+      <h2 class="lg">Как выглядит<br>урок в Язык+</h2>
+    </div>
+    <button class="film__play" type="button" data-play>Смотреть</button>
+  </div>
+</section>
+
+<section class="orange pad">
+  <div class="wrap">
+    <span class="tag">Наши ценности</span>
+    <h2 class="md reveal" data-reveal>Четыре вещи, на которых держится каждый урок в Язык+ — в любой группе и в любом возрасте.</h2>
+  </div>
+</section>
+
+<section class="acts" data-acts>
+  <div class="acts__stage">
+    <div class="acts__media">
+      <div class="lay" data-lay><img src="media/value-1.jpg" alt="Две ученицы шепчутся и смеются за партой"></div>
+      <div class="lay" data-lay><img src="media/value-2.jpg" alt="Малыши в масках героев на занятии"></div>
+      <div class="lay" data-lay><img src="media/value-3.jpg" alt="Подростки обсуждают тему на уроке" style="object-position:38% 50%"></div>
+      <div class="lay" data-lay><img src="media/value-4.jpg" alt="Дети в лагере Язык+ на улице"></div>
+    </div>
+    <div class="acts__panel">
+      <div class="act" data-act>
+        <span class="no">Ценность 01</span>
+        <h2 class="md">Безопасное пространство, где ребёнок — личность</h2>
+        <p>Ребёнок на уроке — человек со своим характером, а не оценка в журнале. Ошибаться можно: именно так и учатся говорить.</p>
+      </div>
+      <div class="act" data-act>
+        <span class="no">Ценность 02</span>
+        <h2 class="md">Движение и смена деятельности</h2>
+        <p>На уроке двигаются все — от малышей до старшеклассников. Задания сменяют друг друга, и внимание не успевает устать.</p>
+      </div>
+      <div class="act" data-act>
+        <span class="no">Ценность 03</span>
+        <h2 class="md">Развитие речи и свободное общение</h2>
+        <p>Главное, чему мы учим, — говорить. Понимать собеседника и быть понятым на языке, а не переводить на бумаге.</p>
+      </div>
+      <div class="act" data-act>
+        <span class="no">Ценность 04</span>
+        <h2 class="md">Внеклассные проекты</h2>
+        <p>Клубы, игры, лагеря и выступления. В них растут качества, которые не проверить тестом: смелость, самостоятельность, умение работать в команде.</p>
+      </div>
+      <div class="acts__dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 ─── МОЗГ И КЛАСС ─── -->
+<section class="pad" data-chapter="05">
+  <div class="wrap">
+    <span class="tag">Почему так</span>
+    <h2 class="lg">Мозг учится в движении</h2>
+    <p style="margin-top:18px">Пятьдесят минут неподвижно за партой — не то, как устроено внимание ребёнка. Поэтому урок собран из коротких отрезков: сменилось задание — внимание снова включилось.</p>
+    <div class="duo">
+      <figure>
+        <div class="frame frame--brain slot">
+          <img src="media/brain.jpg" alt="Мозг" onerror="this.remove()" onload="this.nextElementSibling.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <svg viewBox="0 0 400 320" role="img" aria-label="Схема мозга" data-brain>
+            <path class="brain-line" stroke="#1C2024" stroke-width="4" d="M92 190C62 170 56 122 86 96C97 60 140 40 176 48C202 25 252 28 276 50C316 51 346 80 346 116C370 136 366 180 341 196C336 226 301 241 271 233C251 251 216 251 200 237C181 251 141 249 126 229C101 229 86 213 92 190Z"/>
+            <path class="brain-line" stroke="#1C2024" stroke-width="4" d="M271 233C287 256 323 254 333 232"/>
+            <path class="brain-line" stroke="#1C2024" stroke-width="4" d="M232 243C236 266 238 284 236 302M258 238C256 262 256 282 259 302"/>
+            <g class="brain-line" stroke="#1887C8" stroke-width="3.5">
+              <path d="M121 110C141 99 151 126 171 116C191 106 196 90 216 96"/>
+              <path d="M231 60C225 86 246 101 241 126C237 146 251 161 266 159"/>
+              <path d="M110 160C135 150 150 171 175 161C200 151 210 171 235 161C255 153 271 166 291 159"/>
+              <path d="M291 90C306 101 321 96 331 111"/>
+              <path d="M141 201C161 191 181 211 206 201C226 193 241 206 256 199"/>
+              <path d="M301 131C311 151 331 151 336 166"/>
+              <path d="M161 66C171 80 186 76 196 70"/>
+            </g>
+          </svg>
+        </div>
+        <figcaption>01 — внимание держится короткими отрезками</figcaption>
+      </figure>
+      <figure>
+        <div class="frame slot"><img src="media/class.jpg" alt="Преподаватель показывает ученицам задание в учебнике" style="object-position:45% 50%" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>02</b><small>фото класса · media/class.jpg</small></div></div>
+        <figcaption>02 — поэтому урок собран из разных заданий</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ─── ДВИЖЕНИЕ: лента ─── -->
+<section class="rail" data-rail data-chapter="06">
+  <div class="rail__head">
+    <span class="tag">На уроке</span>
+    <h2 class="lg">Движение и смена активностей</h2>
+  </div>
+  <div class="rail__track" data-rail-track>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-01.jpg" alt="На уроке: игра в кругу" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>01</b><small>фото урока · media/lesson-01.jpg</small></div></div><span>01 — игра в кругу</span></div>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-02.jpg" alt="На уроке: работа в парах" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>02</b><small>фото урока · media/lesson-02.jpg</small></div></div><span>02 — работа в парах</span></div>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-03.jpg" alt="На уроке: песня с движениями" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>03</b><small>фото урока · media/lesson-03.jpg</small></div></div><span>03 — песня с движениями</span></div>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-04.jpg" alt="На уроке: работа у доски" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>04</b><small>фото урока · media/lesson-04.jpg</small></div></div><span>04 — работа у доски</span></div>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-05.jpg" alt="На уроке: игра по ролям" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>05</b><small>фото урока · media/lesson-05.jpg</small></div></div><span>05 — игра по ролям</span></div>
+    <div class="rail__card"><div class="slot"><img src="media/lesson-06.jpg" alt="На уроке: командная игра" onerror="this.parentNode.classList.add('is-empty')"><div class="slot__ph"><b>06</b><small>фото урока · media/lesson-06.jpg</small></div></div><span>06 — командная игра</span></div>
+  </div>
+</section>
+
+<!-- 07 ─── ОСЕНЬ ─── -->
+<section class="split" data-chapter="07">
+  <div class="split__media"><img src="media/autumn.jpg" alt="Ученики с книгой и планшетом за столом в Язык+" style="object-position:52% 50%"></div>
+  <div class="split__panel dark">
+    <span class="tag">Осень 2026</span>
+    <h2 class="md">Внеклассные проекты<br>этой осени</h2>
+    <div class="spec">
+      <div class="spec__row"><span><b>Speaking Club</b></span><i>10 октября</i></div>
+      <div class="spec__row"><span><b>Ролевая игра</b></span><i>10 октября</i></div>
+      <div class="spec__row"><span><b>Городской лагерь</b></span><i>26–30 октября</i></div>
+      <div class="spec__row"><span><b>Выездной лагерь</b></span><i>26–30 октября</i></div>
+      <div class="spec__row"><span><b>Spelling Bee</b></span><i>15 ноября</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 ─── ЗАДУМАТЬСЯ СЕЙЧАС ─── -->
+<section class="pad lime" data-chapter="08">
+  <div class="wrap">
+    <span class="tag">Планируем заранее</span>
+    <h2 class="lg">О чём стоит задуматься уже сейчас</h2>
+    <p style="margin-top:18px">Поездки и лагеря планируются за несколько месяцев — поэтому рассказываем о них уже в сентябре.</p>
+    <div class="nums">
+      <div class="num num--word"><span class="i">01</span><span class="t">Новогодняя ярмарка</span><span class="v">праздник</span></div>
+      <div class="num num--word"><span class="i">02</span><span class="t">Поездка на север</span><span class="v">поездка · 19–23 февраля</span></div>
+      <div class="num num--word"><span class="i">03</span><span class="t">Летний лагерь</span><span class="v">лагерь</span></div>
+      <div class="num num--word"><span class="i">04</span><span class="t">Летний лагерь в Турции</span><span class="v">лагерь · море</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08b ─── ЛЕТО: ТУРЦИЯ (занавес) ─── -->
+<section class="curtain">
+  <div class="curtain__sticky">
+    <div class="curtain__base">
+      <h2 class="lg">А летом —<br>снова море</h2>
+    </div>
+    <div class="curtain__frame" data-curtain><img src="media/turkey.jpg" alt="Ученицы разговаривают на уроке в Язык+"></div>
+    <div class="curtain__over" data-curtain-cap>
+      <span class="tag">Язык+ · каждый день</span>
+      <h2 class="lg">Место, где язык<br>становится своим</h2>
+    </div>
+  </div>
+</section>
+
+<!-- 09 ─── АКАДЕМИЧЕСКИЙ ПРОГРЕСС ─── -->
+<section class="pad tint" data-chapter="09">
+  <div class="wrap">
+    <span class="tag">Прозрачность</span>
+    <h2 class="lg">Академический прогресс</h2>
+    <div class="spec2">
+      <div class="spec">
+        <div class="spec__h">Как отслеживаем</div>
+        <div class="spec__row"><span><b>Тест по итогам каждого юнита</b></span><i>каждый юнит</i></div>
+        <div class="spec__row"><span><b>Аттестация по международной шкале</b></span><i>2 раза в год</i></div>
+        <div class="spec__row"><span><b>Недели открытых уроков</b></span><i>17–21 ноября<br>20–24 апреля</i></div>
+        <div class="spec__row"><span><b>Все результаты</b> — в специальном личном кабинете в боте</span><i>онлайн</i></div>
+      </div>
+      <div class="spec">
+        <div class="spec__h">Что есть в личном кабинете</div>
+        <div class="spec__row"><span>Остаток занятий</span><i>01</i></div>
+        <div class="spec__row"><span>Оплаты и скидки</span><i>02</i></div>
+        <div class="spec__row"><span>Домашние задания</span><i>03</i></div>
+        <div class="spec__row"><span>Результаты и сертификаты</span><i>04</i></div>
+        <div class="spec__row"><span>Анонсы и запись на мероприятия</span><i>05</i></div>
+        <div class="spec__row"><span>Вопросы в школу</span><i>06</i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09b ─── ЛИЧНЫЙ КАБИНЕТ: картинка во весь экран ─── -->
+<section class="shot">
+  <img class="shot__bg" src="media/bot.jpg" alt="" aria-hidden="true">
+  <img class="shot__img" src="media/bot.jpg" alt="Личный кабинет ученика — бот школы «Язык Плюс»: остаток занятий, оплаты и скидки, домашние задания, результаты и сертификаты, анонсы и запись на мероприятия, вопросы в школу">
+</section>
+
+<!-- 09c ─── BULLET JOURNAL ─── -->
+<section class="pad journal">
+  <div class="wrap journal__grid">
+    <div class="journal__pics" data-journal>
+      <img class="journal__cover" src="media/journal-cover.jpg" alt="Обложка Bullet Journal 6.0+ Progress Notebook">
+      <img class="journal__page" src="media/journal-progress.jpg" alt="Страница My Progress: таблица тестов по юнитам и список событий года">
+    </div>
+    <div>
+      <span class="tag">Bullet Journal 6.0+</span>
+      <h2 class="lg">Прогресс в тетради</h2>
+      <p style="margin-top:18px">Кроме бота, прогресс виден и на бумаге: в тетради Progress Notebook на странице <b>My Progress</b>.</p>
+      <div class="spec">
+        <div class="spec__h">Tests. I’m a smart cookie!</div>
+        <div class="spec__row"><span>После каждого юнита ученик записывает свой результат теста</span><i>баллы · % · оценка</i></div>
+        <div class="spec__row"><span>Например, <b>Unit 0</b></span><i>28/30 · 93% · A</i></div>
+      </div>
+      <div class="spec">
+        <div class="spec__h">This year I’ve been / been to</div>
+        <p style="margin-top:14px;font-size:clamp(17px,1.15vw,23px)">Отмечает всё, в чём участвовал за год:</p>
+        <div class="chips">
+          <span>The best student</span><span>The best group</span><span>Saturday clubs</span><span>Quest</span><span>Pre-test 1</span><span>Spelling bee</span><span>X-mas Fair</span><span>Mind Games</span><span>Quiz</span><span>Pre-test 2</span><span>City Camp</span><span>Book I</span><span>Book II</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ─── ДОП. АКАДЕМИЧЕСКИЕ ─── -->
+<section class="pad" data-chapter="10">
+  <div class="wrap">
+    <span class="tag">Сверх программы</span>
+    <h2 class="lg">Дополнительные академические мероприятия</h2>
+    <div class="cols">
+      <div class="col">
+        <span class="i">01</span>
+        <h3>Олимпиада Язык+</h3>
+        <p>Внутренняя олимпиада школы для студентов от 5 лет.</p>
+        <span class="where">Внутри школы · от 5 лет</span>
+      </div>
+      <div class="col">
+        <span class="i">02</span>
+        <h3>Teddy Talk</h3>
+        <p>Выступления студентов на английском перед залом.</p>
+        <span class="where">Публичная речь</span>
+      </div>
+      <div class="col">
+        <span class="i">03</span>
+        <h3>Международная олимпиада</h3>
+        <p>Выезд на олимпиаду международного уровня.</p>
+        <span class="where">Казань</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ─── МОТИВАЦИЯ ─── -->
+<section class="split" data-chapter="11">
+  <div class="split__media"><img src="media/best.jpg" alt="Группа с преподавателем за праздничным столом" style="object-position:28% 50%"></div>
+  <div class="split__panel orange">
+    <span class="tag">Мотивация</span>
+    <h2 class="md">Лучшим может стать и студент, и вся группа</h2>
+    <div class="best">
+      <div><b>Best Student</b><i>студент месяца</i></div>
+      <div><b>Best Group</b><i>группа месяца</i></div>
+    </div>
+  </div>
+</section>
+
+<section class="split split--flip">
+  <div class="split__media poster-wrap">
+    <div class="poster">
+      <div class="poster__top"><span>Геймификация</span><span>Язык+</span></div>
+      <h3 class="poster__h">Зарабатывай <em>плюсы</em><br>меняй на мерч</h3>
+      <p class="poster__sub">За отличную учёбу ученик получает плюсы и обменивает их на фирменные подарки от Язык+.</p>
+      <div class="poster__label">Как заработать</div>
+      <ul class="poster__earn">
+          <li><span>Работа на уроке</span><b>3+</b></li>
+          <li><span>Оценка A за тест</span><b>5+</b></li>
+          <li><span>Лучший студент</span><b>15+</b></li>
+          <li><span>Лучшая группа</span><b>10+</b></li>
+          <li><span>Участие в олимпиаде, Spelling Bee, TEDdy Talks</span><b>10+</b></li>
+          <li><span>Призовые места в олимпиаде, Spelling Bee, TEDdy Talks</span><b>15+</b></li>
+          <li><span>Квиз, квест, Speaking club, Book club</span><b>5+</b></li>
+          <li><span>Волонтёр</span><b>10+</b></li>
+          <li><span>Лагерь</span><b>10+</b></li>
+          <li><span>Помощник вожатых</span><b>15+</b></li>
+          <li><span>Аттестация: письменная + устная</span><b>5+</b></li>
+          <li><span>Аттестация: 15 щитов / Grade A</span><b>10+</b></li>
+      </ul>
+      <div class="poster__label">На что обменять</div>
+      <div class="poster__shop">
+          <figure><img src="media/merch/pens.png" alt="Ручка"><b>100+</b><small>Ручка</small></figure>
+          <figure><img src="media/merch/bracelets.png" alt="Браслет"><b>200+</b><small>Браслет</small></figure>
+          <figure><img src="media/merch/bag.png" alt="Рюкзак-мешок"><b>450+</b><small>Рюкзак-мешок</small></figure>
+          <figure><img src="media/merch/cardholder.png" alt="Кардхолдер"><b>500+</b><small>Кардхолдер</small></figure>
+          <figure><img src="media/merch/bottles.png" alt="Бутылка"><b>620+</b><small>Бутылка</small></figure>
+          <figure><img src="media/merch/mug.png" alt="Термокружка"><b>650+</b><small>Термокружка</small></figure>
+          <figure><img src="media/merch/backpack.png" alt="Рюкзак"><b>700+</b><small>Рюкзак</small></figure>
+      </div>
+    </div>
+  </div>
+  <div class="split__panel dark">
+    <span class="tag">Геймификация</span>
+    <h2 class="md">Учёба как игра</h2>
+    <p style="margin-top:18px">За работу на уроке, тесты, олимпиады, клубы и лагеря ученики получают плюсы и копят их на фирменный мерч: от ручки за 100+ до рюкзака за 700+.</p>
+  </div>
+</section>
+
+<!-- 12 ─── ДЛЯ РОДИТЕЛЕЙ ─── -->
+<section class="orange pad" data-chapter="12">
+  <div class="wrap">
+    <span class="tag">Для вас</span>
+    <h2 class="lg">Образовательные проекты для родителей</h2>
+    <div class="spec" style="margin-top:clamp(30px,5vh,54px)">
+      <div class="spec__row" style="font-size:clamp(22.5px,3vw,35px);padding-block:clamp(14px,2.4vh,24px)"><span style="font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:-.02em">Book Club</span><i>книжный клуб</i></div>
+      <div class="spec__row" style="font-size:clamp(22.5px,3vw,35px);padding-block:clamp(14px,2.4vh,24px)"><span style="font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:-.02em">Поездка в Минск</span><i>поездка · 30 апреля – 6 мая</i></div>
+      <div class="spec__row" style="font-size:clamp(22.5px,3vw,35px);padding-block:clamp(14px,2.4vh,24px)"><span style="font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:-.02em">Взрослый лагерь</span><i>лагерь для взрослых</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 ─── УРОВНИ (если останется время) ─── -->
+<section class="pad" data-chapter="13">
+  <div class="wrap">
+    <span class="tag">Приложение · если останется время</span>
+    <h2 class="lg">Уровни владения языком</h2>
+    <div class="cefr" data-cefr>
+      <div class="lvl"><b>A1</b><div class="n">Начальный<small>уровень выживания: минимум, чтобы объясниться</small></div><div class="bar"><i style="width:16%"></i></div></div>
+      <div class="lvl"><b>A2</b><div class="n">Предпороговый<small>простые бытовые ситуации</small></div><div class="bar"><i style="width:32%"></i></div></div>
+      <div class="lvl"><b>B1</b><div class="n">Пороговый<small>общается без помощи собеседника</small></div><div class="bar"><i style="width:50%"></i></div></div>
+      <div class="lvl"><b>B2</b><div class="n">Пороговый продвинутый<small>сложные тексты и неподготовленный разговор</small></div><div class="bar"><i style="width:66%"></i></div></div>
+      <div class="lvl"><b>C1</b><div class="n">Профессиональный<small>свободное и уверенное владение</small></div><div class="bar"><i style="width:84%"></i></div></div>
+      <div class="lvl"><b>C2</b><div class="n">В совершенстве<small>уровень носителя языка</small></div><div class="bar"><i style="width:100%"></i></div></div>
+    </div>
+    <p class="groupnote">A — базовое владение · B — самостоятельное · C — свободное</p>
+  </div>
+</section>
+
+<!-- ─── ФИНАЛ ─── -->
+<section class="end">
+  <div class="wrap">
+    <div class="end__grid">
+      <div>
+        <span class="tag">Спасибо, что пришли</span>
+        <h2 class="lg">Живём языком —<br><em>вместе с вами</em></h2>
+        <p style="margin-top:22px">Вопросы, пожелания и идеи — после собрания, у преподавателя группы или в наших каналах.</p>
+      </div>
+      <div class="cert">
+        <b>Сейчас</b>
+        <div style="font-family:var(--display);font-weight:700;font-size:clamp(25px,3vw,35px);line-height:1.12">Время для ваших вопросов</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>Язык+ · собрание для родителей</span>
+      <span>Сентябрь 2026</span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = !!(window.gsap && window.ScrollTrigger);
+
+  /* видео: если файла нет — показываем заглушку */
+  var film = document.querySelector('[data-film]');
+  var video = document.querySelector('[data-video]');
+  var play = document.querySelector('[data-play]');
+  if(video){
+    var filmUnavailable = function(){
+      film.classList.add('is-empty');
+      film.classList.remove('is-playing');
+      play.textContent = 'Смотреть';
+    };
+    video.addEventListener('error', filmUnavailable);
+    play.addEventListener('click', function(){
+      if(video.paused){
+        video.controls = true;
+        var filmPromise = video.play();
+        if(filmPromise && filmPromise.catch) filmPromise.catch(filmUnavailable);
+        film.classList.add('is-playing');
+        play.textContent = 'Пауза';
+      }
+      else { video.pause(); film.classList.remove('is-playing'); play.textContent = 'Смотреть'; }
+    });
+    video.addEventListener('ended', function(){ film.classList.remove('is-playing'); play.textContent = 'Смотреть'; });
+  }
+
+  /* счётчики. Пустой data-count — число ещё не вписано */
+  function putNum(el, v){
+    var unit = el.querySelector('u');
+    el.textContent = Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+    if(unit) el.appendChild(unit);
+  }
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    var raw = el.dataset.count.trim();
+    if(!raw){ el.textContent = '—'; el.classList.add('is-todo'); return; }
+    var to = parseFloat(raw);
+    if(!hasGsap || reduced){ putNum(el, to); return; }
+    var o = { v:0 };
+    gsap.to(o, { v:to, duration:1.5, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 90%' },
+      onUpdate:function(){ putNum(el, o.v); } });
+  });
+
+  /* видео «жизнь школы»: большая кнопка → обычный плеер */
+  var reel = document.querySelector('[data-reel]');
+  if(reel){
+    var rv = reel.querySelector('video'), rb = reel.querySelector('[data-reel-play]'), rs = reel.closest('.reel'), re = rs.querySelector('[data-reel-error]');
+    var reelUnavailable = function(){
+      rs.classList.remove('is-playing');
+      if(re) re.hidden = false;
+      rb.setAttribute('aria-label', 'Повторить загрузку видео');
+    };
+    rb.addEventListener('click', function(){
+      if(re) re.hidden = true;
+      rv.controls = true;
+      var pr = rv.play();
+      if(pr && pr.catch) pr.catch(reelUnavailable);
+    });
+    rv.addEventListener('error', reelUnavailable);
+    rv.addEventListener('play', function(){ rs.classList.add('is-playing'); rv.controls = true; });
+    rv.addEventListener('ended', function(){ rs.classList.remove('is-playing'); rv.currentTime = 0; });
+  }
+
+  if(!hasGsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  if(!reduced){
+    var lenis = new Lenis({ duration:1.1, smoothWheel:true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* индекс глав слева */
+  var idx = document.querySelector('[data-idx]');
+  gsap.utils.toArray('[data-chapter]').forEach(function(sec){
+    ScrollTrigger.create({ trigger:sec, start:'top 55%', end:'bottom 55%',
+      onToggle:function(s){ if(s.isActive && idx) idx.textContent = sec.dataset.chapter; } });
+  });
+
+  if(reduced) return;
+  document.documentElement.classList.add('motion');
+
+  /* обложка: фото и текст расходятся с разной скоростью */
+  gsap.to('[data-cover-media]', { yPercent:14, scale:1.1, ease:'none',
+    scrollTrigger:{ trigger:'.cover', start:'top top', end:'bottom top', scrub:true } });
+  gsap.to('[data-cover-text]', { yPercent:-24, opacity:0, ease:'none',
+    scrollTrigger:{ trigger:'.cover', start:'30% top', end:'bottom top', scrub:true } });
+
+  /* появление по словам */
+  document.querySelectorAll('[data-reveal]').forEach(function(el){
+    el.innerHTML = el.textContent.trim().split(/\s+/).map(function(w){
+      return '<span class="w"><i>'+w+'</i></span>';
+    }).join(' ');
+    gsap.from(el.querySelectorAll('.w i'), { yPercent:110, duration:.85, ease:'power3.out', stagger:.03,
+      scrollTrigger:{ trigger:el, start:'top 84%' } });
+  });
+
+  /* полоса состава команды */
+  gsap.from('[data-team] span', { scaleX:0, duration:1, ease:'power3.out', stagger:.12,
+    scrollTrigger:{ trigger:'[data-team]', start:'top 88%' } });
+
+  /* видео: кадр раскрывается до полного экрана */
+  gsap.to('[data-film-frame]', { clipPath:'inset(0% 0% 0% 0%)', ease:'none',
+    scrollTrigger:{ trigger:film, start:'top top', end:'60% bottom', scrub:.5 } });
+  gsap.to('[data-film-cap]', { opacity:0, scale:1.12, ease:'none',
+    scrollTrigger:{ trigger:film, start:'top top', end:'45% bottom', scrub:.5 } });
+  gsap.from(play, { opacity:0, y:16, ease:'none',
+    scrollTrigger:{ trigger:film, start:'45% bottom', end:'62% bottom', scrub:.5 } });
+
+  /* ценности: кадр и панель меняются синхронно */
+  var lays = gsap.utils.toArray('[data-lay]'), acts = gsap.utils.toArray('[data-act]');
+  var dots = gsap.utils.toArray('.acts__dots i');
+  gsap.set(lays.slice(1), { opacity:0 });
+  gsap.set(acts.slice(1), { opacity:0, y:22 });
+  var t = gsap.timeline({ scrollTrigger:{ trigger:'[data-acts]', start:'top top', end:'+=' + (lays.length*90) + '%', pin:true, scrub:.55,
+    onUpdate:function(s){ var k = Math.min(dots.length-1, Math.round(s.progress*(dots.length-1+.4)-.2));
+      dots.forEach(function(d,j){ d.classList.toggle('on', j===k); }); } } });
+  for(var i=1;i<lays.length;i++){
+    t.to(acts[i-1], { opacity:0, y:-22, duration:.4 }, i-1)
+     .to(lays[i],   { opacity:1, duration:.75 }, i-1)
+     .to(acts[i],   { opacity:1, y:0, duration:.5 }, i-0.55);
+  }
+  t.to({}, { duration:.5 });
+
+  /* мозг: линии прорисовываются */
+  var paths = document.querySelectorAll('[data-brain] path');
+  paths.forEach(function(p){ var L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+  gsap.to(paths, { strokeDashoffset:0, duration:1.6, ease:'power2.inOut', stagger:.08,
+    scrollTrigger:{ trigger:'[data-brain]', start:'top 78%' } });
+
+  /* занавес: кадр поднимается снизу */
+  gsap.to('[data-curtain]', { clipPath:'inset(0% 0 0 0)', ease:'none',
+    scrollTrigger:{ trigger:'.curtain', start:'top 70%', end:'top top', scrub:.2 } });
+  gsap.to('[data-curtain-cap]', { opacity:1, ease:'none',
+    scrollTrigger:{ trigger:'.curtain', start:'top 20%', end:'top -10%', scrub:.2 } });
+
+  /* сплит-панели приезжают навстречу друг другу */
+  gsap.utils.toArray('.split').forEach(function(sec){
+    var m = sec.querySelector('.split__media'), p = sec.querySelector('.split__panel');
+    var flip = sec.classList.contains('split--flip');
+    gsap.from(m, { xPercent: flip ? 12 : -12, duration:1, ease:'power2.out',
+      scrollTrigger:{ trigger:sec, start:'top 78%' } });
+    gsap.from(p, { xPercent: flip ? -8 : 8, opacity:0, duration:1, ease:'power2.out',
+      scrollTrigger:{ trigger:sec, start:'top 78%' } });
+  });
+
+  /* горизонтальная лента */
+  var track = document.querySelector('[data-rail-track]');
+  if(track){
+    gsap.to(track, { x:function(){ return -Math.max(0, track.scrollWidth - window.innerWidth); }, ease:'none',
+      scrollTrigger:{ trigger:'[data-rail]', start:'top top',
+        end:function(){ return '+=' + Math.max(1, track.scrollWidth - window.innerWidth); },
+        pin:true, scrub:.6, invalidateOnRefresh:true } });
+  }
+
+  /* строки выезжают по очереди */
+  gsap.utils.toArray('.nums, .spec, .cols, .qr, .best').forEach(function(box){
+    gsap.from(box.children, { y:30, opacity:0, duration:.7, ease:'power2.out', stagger:.08,
+      scrollTrigger:{ trigger:box, start:'top 84%' } });
+  });
+
+  /* личный кабинет: картинка приближается */
+  gsap.from('.shot__img', { scale:.86, opacity:.5, ease:'none',
+    scrollTrigger:{ trigger:'.shot', start:'top 85%', end:'top 15%', scrub:.5 } });
+
+  /* Bullet Journal: страницы раскладываются */
+  gsap.from('.journal__cover', { rotate:-12, x:-40, opacity:0, duration:1, ease:'power2.out',
+    scrollTrigger:{ trigger:'[data-journal]', start:'top 80%' } });
+  gsap.from('.journal__page', { rotate:12, x:40, opacity:0, duration:1, delay:.15, ease:'power2.out',
+    scrollTrigger:{ trigger:'[data-journal]', start:'top 80%' } });
+
+  /* уровни: полосы растут */
+  gsap.from('[data-cefr] .bar i', { scaleX:0, duration:1.1, ease:'power3.out', stagger:.1,
+    scrollTrigger:{ trigger:'[data-cefr]', start:'top 78%' } });
+
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>

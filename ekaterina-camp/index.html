@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Визуальное исследование лагеря как образовательной среды: выбор, ответственность, смешанные команды и рефлексия.">
+  <meta name="theme-color" content="#052d42">
+  <title>Лагерь как образовательная среда — Екатерина Предаченко</title>
+  <link rel="preload" href="assets/camp-team.jpg" as="image">
+  <style>
+    :root {
+      --ink: #f2f7f8;
+      --ink-dim: #b5c8ce;
+      --ground: #052d42;
+      --ground-2: #07374f;
+      --paper: #eaf2f5;
+      --paper-2: #d4e5eb;
+      --paper-ink: #062c40;
+      --accent: #0071b3;
+      --accent-soft: #59c3dc;
+      --blue: #04b3db;
+      --line: rgba(218,239,246,.18);
+      --serif: Iowan Old Style, Baskerville, "Times New Roman", serif;
+      --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      --gut: clamp(20px, 5vw, 78px);
+      --measure: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--ground); }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--ground);
+      color: var(--ink);
+      font: 400 clamp(16px, 1.35vw, 19px)/1.55 var(--sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; width: 100%; }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    button { color: inherit; }
+    ::selection { background: var(--accent-soft); color: var(--paper-ink); }
+
+    .skip-link {
+      position: fixed; z-index: 200; top: 10px; left: 10px;
+      transform: translateY(-150%); padding: 10px 14px;
+      background: var(--paper); color: var(--paper-ink); border-radius: 999px;
+    }
+    .skip-link:focus { transform: translateY(0); }
+    :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 4px; }
+
+    .progress {
+      position: fixed; inset: 0 0 auto; height: 3px; z-index: 150;
+      background: rgba(255,255,255,.08);
+    }
+    .progress__bar {
+      display: block; width: 100%; height: 100%; transform: scaleX(0);
+      transform-origin: left; background: var(--accent-soft); will-change: transform;
+    }
+
+    .topbar {
+      position: fixed; z-index: 120; top: max(18px, env(safe-area-inset-top));
+      left: max(var(--gut), env(safe-area-inset-left)); right: max(var(--gut), env(safe-area-inset-right));
+      display: flex; align-items: center; justify-content: space-between;
+      color: rgba(255,255,255,.8); mix-blend-mode: difference;
+      pointer-events: none; font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    }
+    .topbar > * { pointer-events: auto; }
+    .topbar__mark { text-decoration: none; font-weight: 700; }
+    .topbar__index { font-variant-numeric: tabular-nums; }
+
+    .wrap { width: min(var(--measure), calc(100% - 2 * var(--gut))); margin-inline: auto; }
+    .section { position: relative; }
+    .screen { min-height: 100svh; }
+    .pad { padding-block: clamp(90px, 15vh, 170px); }
+    .eyebrow {
+      margin: 0 0 18px; color: var(--accent-soft); font-size: 11px;
+      font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    }
+    .display, h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; letter-spacing: -.025em; }
+    h1 { font-size: clamp(52px, 9.2vw, 132px); line-height: .86; }
+    h2 { font-size: clamp(40px, 6.6vw, 92px); line-height: .96; }
+    h3 { font-size: clamp(28px, 3.1vw, 46px); line-height: 1.02; }
+    p { margin: 0; }
+    .lead { max-width: 59ch; color: var(--ink-dim); font-size: clamp(18px, 1.65vw, 23px); }
+    .fine { color: var(--ink-dim); font-size: 13px; line-height: 1.5; }
+    .rule { height: 1px; background: currentColor; opacity: .17; }
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.75,.25,1); }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    .hero { display: grid; place-items: end start; overflow: hidden; isolation: isolate; }
+    .hero__media { position: absolute; inset: -8%; z-index: -2; will-change: transform; }
+    .hero__media img { height: 116%; object-fit: cover; object-position: center 47%; }
+    .hero::after {
+      content: ""; position: absolute; inset: 0; z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(5,45,66,.24), rgba(5,45,66,.14) 38%, rgba(3,25,37,.96)),
+        linear-gradient(90deg, rgba(3,25,37,.9), rgba(3,25,37,.2) 72%);
+    }
+    .hero__content { width: min(1100px, calc(100% - 2 * var(--gut))); margin: 0 auto; padding-bottom: clamp(62px, 10vh, 105px); }
+    .hero h1 { max-width: 9.4ch; text-shadow: 0 3px 22px rgba(0,0,0,.38); }
+    .hero__sub { display: grid; grid-template-columns: 1fr minmax(250px, 430px); gap: 40px; align-items: end; margin-top: 34px; }
+    .hero__sub p { color: rgba(255,255,255,.76); }
+    .hero__meta { font-size: 13px; letter-spacing: .02em; }
+    .scroll-cue { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 12px; text-transform: uppercase; letter-spacing: .16em; }
+    .scroll-cue::before { content: ""; width: 46px; height: 1px; background: currentColor; }
+
+    .premise { background: var(--paper); color: var(--paper-ink); }
+    .premise__grid { display: grid; grid-template-columns: minmax(260px,.75fr) 1.25fr; gap: clamp(44px, 9vw, 130px); align-items: start; }
+    .premise__quote { max-width: 12ch; }
+    .premise__body { padding-top: 10px; }
+    .premise__body .lead { color: #536a74; }
+    .premise__points { display: grid; gap: 0; margin-top: 56px; }
+    .premise__point { display: grid; grid-template-columns: 56px 1fr; gap: 18px; padding: 20px 0; border-top: 1px solid rgba(6,44,64,.17); }
+    .premise__point b { font-size: 12px; letter-spacing: .12em; color: #326f8b; }
+
+    .evidence { background: var(--ground); }
+    .evidence__head { display: grid; grid-template-columns: 1.15fr .85fr; gap: 60px; align-items: end; }
+    .evidence__grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-top: clamp(55px,9vh,100px); background: var(--line); border: 1px solid var(--line); }
+    .metric { min-height: 250px; padding: clamp(24px,3vw,42px); background: var(--ground); display: flex; flex-direction: column; justify-content: space-between; }
+    .metric__value { font: 400 clamp(55px,7.7vw,106px)/.85 var(--serif); color: var(--accent-soft); font-variant-numeric: tabular-nums; }
+    .metric__label { max-width: 18ch; color: var(--ink-dim); }
+    .evidence__note { margin-top: 22px; max-width: 78ch; }
+
+    .photo-break { min-height: 112svh; overflow: hidden; display: grid; align-items: end; }
+    .photo-break img { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: center 42%; }
+    .photo-break::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 35%,rgba(10,10,9,.93)); }
+    .photo-break__caption { position: relative; z-index: 1; padding-bottom: clamp(56px,10vh,110px); }
+    .photo-break__caption h2 { max-width: 12ch; }
+    .photo-break__caption p { max-width: 48ch; margin-top: 24px; color: rgba(255,255,255,.72); }
+
+    .story { background: var(--ground-2); }
+    .story__layout { display: grid; grid-template-columns: 1.05fr .95fr; }
+    .story__visual { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #0a405a; }
+    .story__visual img { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position:center 42%; opacity: 0; transform: scale(1.05); transition: opacity .75s ease, transform 1.2s ease; }
+    .story__visual img.is-active { opacity: 1; transform: scale(1); }
+    .story__visual::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 60%,var(--ground-2)); }
+    .story__steps { padding: 16vh var(--gut) 16vh clamp(36px,6vw,100px); }
+    .story-card { min-height: 72svh; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid var(--line); opacity: .38; transition: opacity .5s ease; }
+    .story-card.is-active { opacity: 1; }
+    .story-card__no { color: var(--accent-soft); font: 400 22px/1 var(--serif); margin-bottom: 20px; }
+    .story-card p { color: var(--ink-dim); max-width: 43ch; margin-top: 20px; }
+    .story-card__detail { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; font-size: 13px; }
+    .story-card__detail span { padding-top: 13px; border-top: 1px solid var(--line); color: var(--ink-dim); }
+    .story-card__detail b { display:block; color:var(--ink); font-weight:600; margin-bottom:6px; }
+
+    .lens { background: var(--paper); color: var(--paper-ink); }
+    .lens__head { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: end; }
+    .lens .lead, .lens .fine { color: #536a74; }
+    .lens__panel { display: grid; grid-template-columns: minmax(220px,.7fr) 1.3fr; gap: clamp(36px,7vw,90px); margin-top: 70px; padding-top: 42px; border-top: 1px solid rgba(6,44,64,.18); }
+    .lens__tabs { display: grid; gap: 8px; align-content: start; }
+    .lens__tab { border: 1px solid rgba(6,44,64,.18); background: transparent; padding: 17px 20px; text-align: left; cursor: pointer; border-radius: 0; transition: background .25s,color .25s; }
+    .lens__tab[aria-selected="true"] { background: var(--paper-ink); color: var(--paper); }
+    .lens__content { min-height: 310px; }
+    .lens__content [role="tabpanel"] { display: none; }
+    .lens__content [role="tabpanel"].is-active { display: block; animation: content-in .45s ease both; }
+    .lens__content p { max-width: 58ch; color: #536a74; font-size: clamp(18px,1.55vw,22px); }
+    .lens__mapping { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; margin-top: 32px; }
+    .lens__mapping span { padding: 17px; border: 1px solid rgba(6,44,64,.18); font-size: 14px; }
+    .lens__mapping i { font-style: normal; color: #397b98; }
+    @keyframes content-in { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+
+    .rhythm { background: #062f45; }
+    .rhythm__grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(50px,9vw,120px); align-items: start; }
+    .rhythm__sticky { position: sticky; top: 110px; }
+    .rhythm__rail { position: relative; display:grid; gap:0; }
+    .rhythm__rail::before { content:""; position:absolute; top:0; bottom:0; left:13px; width:1px; background:var(--line); }
+    .moment { position:relative; min-height:47vh; padding:0 0 70px 55px; }
+    .moment::before { content:""; position:absolute; left:7px; top:8px; width:13px; height:13px; border-radius:50%; border:2px solid var(--accent-soft); background:#062f45; }
+    .moment time { color:var(--accent-soft); font-size:12px; letter-spacing:.16em; text-transform:uppercase; }
+    .moment h3 { margin-top:13px; }
+    .moment p { color:var(--ink-dim); max-width:44ch; margin-top:18px; }
+    .moment ul { margin:24px 0 0; padding:0; list-style:none; display:grid; gap:10px; color:#d2e0e4; font-size:14px; }
+    .moment li::before { content:"—"; margin-right:10px; color:var(--accent); }
+
+    .role { background: var(--paper); color: var(--paper-ink); overflow:hidden; }
+    .role__ladder { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-top:70px; background:rgba(6,44,64,.18); border:1px solid rgba(6,44,64,.18); }
+    .role-step { min-height:330px; background:var(--paper); padding:32px; display:flex; flex-direction:column; justify-content:space-between; transition:background .3s, color .3s; }
+    .role-step:hover, .role-step:focus-within { background:var(--paper-ink); color:var(--paper); }
+    .role-step__no { font:400 44px/1 var(--serif); color:#397b98; }
+    .role-step p { margin-top:15px; font-size:14px; opacity:.72; }
+
+    .model { background:var(--ground); }
+    .model__grid { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(50px,9vw,120px); align-items:center; }
+    .model__copy .lead { margin-top:25px; }
+    .model__diagram { position:relative; aspect-ratio:1; display:grid; place-items:center; max-width:620px; margin-inline:auto; }
+    .model__orbit { position:absolute; inset:8%; border:1px solid var(--line); border-radius:50%; animation:orbit 35s linear infinite; }
+    .model__orbit::before,.model__orbit::after { content:""; position:absolute; width:11px; height:11px; border-radius:50%; background:var(--accent-soft); }
+    .model__orbit::before { top:16%; left:8%; }.model__orbit::after { right:5%; bottom:22%; }
+    .model__core { width:46%; aspect-ratio:1; display:grid; place-items:center; text-align:center; border-radius:50%; background:var(--paper); color:var(--paper-ink); font:400 clamp(28px,3.4vw,48px)/1 var(--serif); padding:20px; }
+    .model__node { position:absolute; width:31%; padding:14px; text-align:center; font-size:13px; border:1px solid var(--line); background:rgba(5,45,66,.92); }
+    .model__node:nth-of-type(2) { top:2%; left:35%; }.model__node:nth-of-type(3) { left:0; bottom:16%; }.model__node:nth-of-type(4) { right:0; bottom:16%; }
+    @keyframes orbit { to { transform:rotate(360deg); } }
+
+    .method { background:var(--paper); color:var(--paper-ink); }
+    .method__head { display:grid; grid-template-columns:1fr .8fr; gap:70px; align-items:end; }
+    .method .lead, .method .fine { color:#536a74; }
+    .method__grid { display:grid; grid-template-columns:repeat(5,1fr); margin-top:65px; border:1px solid rgba(6,44,64,.18); }
+    .method-card { padding:27px 22px; min-height:260px; border-right:1px solid rgba(6,44,64,.18); }
+    .method-card:last-child { border-right:0; }
+    .method-card b { display:block; font:400 26px/1.05 var(--serif); }
+    .method-card p { margin-top:18px; font-size:13px; color:#536a74; }
+    .method-card small { display:block; margin-top:28px; color:#397b98; text-transform:uppercase; letter-spacing:.1em; }
+
+    .boundary { background:#07374f; }
+    .boundary__grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:60px; background:var(--line); border:1px solid var(--line); }
+    .boundary-card { background:#07374f; padding:clamp(30px,4vw,54px); }
+    .boundary-card h3 { color:var(--accent-soft); }
+    .boundary-card ul { list-style:none; padding:0; margin:34px 0 0; display:grid; gap:16px; color:var(--ink-dim); }
+    .boundary-card li { padding-top:16px; border-top:1px solid var(--line); }
+    .boundary-card--future { background:#0a405a; }
+
+    .finale { min-height:100svh; display:grid; align-items:end; overflow:hidden; }
+    .finale img { position:absolute; inset:0; height:100%; object-fit:cover; object-position:center 47%; }
+    .finale::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(8,8,7,.06),rgba(8,8,7,.9)); }
+    .finale__content { position:relative; z-index:1; padding-bottom:clamp(65px,11vh,120px); }
+    .finale h2 { max-width:13ch; }
+    .finale__footer { display:flex; justify-content:space-between; gap:40px; margin-top:55px; padding-top:24px; border-top:1px solid rgba(255,255,255,.22); font-size:13px; color:rgba(255,255,255,.7); }
+
+    @media (max-width: 900px) {
+      .hero__sub, .premise__grid, .evidence__head, .lens__head, .rhythm__grid, .model__grid, .method__head { grid-template-columns:1fr; }
+      .hero__sub { gap:22px; }
+      .evidence__grid { grid-template-columns:1fr 1fr; }
+      .story__layout { grid-template-columns:1fr; }
+      .story__visual { position:sticky; top:0; height:52svh; z-index:2; }
+      .story__visual::after { background:linear-gradient(180deg,transparent 65%,var(--ground-2)); }
+      .story__steps { padding-top:0; }
+      .story-card { min-height:62svh; }
+      .lens__panel { grid-template-columns:1fr; }
+      .lens__tabs { grid-template-columns:repeat(3,1fr); }
+      .lens__tab { padding:14px 10px; text-align:center; font-size:13px; }
+      .rhythm__sticky { position:relative; top:auto; }
+      .role__ladder { grid-template-columns:1fr 1fr; }
+      .method__grid { grid-template-columns:1fr 1fr; }
+      .method-card { border-bottom:1px solid rgba(6,44,64,.18); }
+    }
+
+    @media (max-width: 620px) {
+      h1 { font-size:clamp(48px,17vw,78px); }
+      h2 { font-size:clamp(38px,13vw,62px); }
+      .topbar__name { display:none; }
+      .hero__content { padding-bottom:48px; }
+      .hero__media { inset:-3%; }
+      .hero__media img { object-position:52% center; }
+      .photo-break img { object-position:53% center; }
+      .story__visual img { object-position:center 38%; }
+      .finale img { object-position:center 48%; }
+      .evidence__grid, .role__ladder, .method__grid, .boundary__grid { grid-template-columns:1fr; }
+      .metric { min-height:190px; }
+      .lens__mapping { grid-template-columns:1fr; }
+      .lens__mapping i { transform:rotate(90deg); justify-self:center; }
+      .story__steps { padding-inline:var(--gut); }
+      .story-card__detail { grid-template-columns:1fr; }
+      .model__node { width:39%; font-size:11px; }.model__node:nth-of-type(2){left:30%}
+      .finale__footer { flex-direction:column; gap:10px; }
+    }
+
+    @media (max-height: 560px) and (min-width: 640px) {
+      .topbar__name { display:none; }
+      .hero__content { padding-bottom:22px; }
+      .hero h1 { max-width:11ch; font-size:clamp(46px,7vw,60px); line-height:.88; }
+      .hero .eyebrow { margin-bottom:8px; }
+      .hero__sub { margin-top:14px; gap:24px; }
+      .hero__sub p { font-size:12px; line-height:1.4; }
+      .scroll-cue { font-size:10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+      .reveal { opacity:1; transform:none; }
+      .hero__media { transform:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">Перейти к содержанию</a>
+  <div class="progress" aria-hidden="true"><span class="progress__bar" id="progressBar"></span></div>
+  <header class="topbar" aria-label="Навигация презентации">
+    <a class="topbar__mark" href="#start">Field notes / 01</a>
+    <span class="topbar__name">Екатерина Предаченко · ЦМО «Язык Плюс»</span>
+    <span class="topbar__index" id="sectionIndex">01 / 12</span>
+  </header>
+
+  <main id="content">
+    <section class="section screen hero" id="start" data-label="Введение">
+      <div class="hero__media" id="heroMedia"><img src="assets/camp-team.jpg" width="1564" height="1600" alt="Разновозрастная команда языкового лагеря после совместного выступления"></div>
+      <div class="hero__content">
+        <p class="eyebrow reveal">Визуальное исследование образовательной среды</p>
+        <h1 class="reveal">Лагерь, где дети действуют сами</h1>
+        <div class="hero__sub reveal">
+          <a class="scroll-cue" href="#premise">Листать исследование</a>
+          <p class="hero__meta">Как выбор, смешанные команды, публичная речь и постепенная передача ответственности превращают смену в опыт самостоятельности.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section premise pad" id="premise" data-label="Тезис">
+      <div class="wrap premise__grid">
+        <div>
+          <p class="eyebrow reveal">01 · Исходный тезис</p>
+          <h2 class="premise__quote reveal">Не занять. Дать действовать.</h2>
+        </div>
+        <div class="premise__body reveal">
+          <p class="lead">В исходной презентации перечислены десятки активностей. Но её главная идея глубже: ребёнок здесь не только участник программы, а человек, который выбирает, предлагает, выступает и постепенно берёт на себя роль взрослого.</p>
+          <div class="premise__points">
+            <div class="premise__point"><b>СДВИГ 01</b><span>от готового расписания — к осмысленному выбору</span></div>
+            <div class="premise__point"><b>СДВИГ 02</b><span>от выполнения задания — к авторству и публичному действию</span></div>
+            <div class="premise__point"><b>СДВИГ 03</b><span>от контроля взрослого — к поддерживаемой автономии</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section evidence pad" id="evidence" data-label="Контекст">
+      <div class="wrap">
+        <div class="evidence__head reveal">
+          <div><p class="eyebrow">02 · Масштаб практики</p><h2>Длинная история, устойчивое возвращение</h2></div>
+          <p class="lead">Это не лабораторный эксперимент, а многолетняя педагогическая практика. Цифры ниже задают контекст — и одновременно обозначают, что ещё предстоит измерить.</p>
+        </div>
+        <div class="evidence__grid reveal">
+          <article class="metric"><span class="metric__value"><b data-count="30">0</b>+</span><span class="metric__label">выездных лагерей в опыте команды</span></article>
+          <article class="metric"><span class="metric__value"><b data-count="90">0</b>%</span><span class="metric__label">участников возвращаются повторно</span></article>
+          <article class="metric"><span class="metric__value">7–17</span><span class="metric__label">лет — возраст смешанных команд</span></article>
+          <article class="metric"><span class="metric__value">1–8</span><span class="metric__label">лет может длиться путь ребёнка в лагере</span></article>
+        </div>
+        <p class="fine evidence__note reveal">Источник: внутренняя презентация ЦМО «Язык Плюс». Показатель 90% является операционным наблюдением команды и не заменяет независимую оценку результатов.</p>
+      </div>
+    </section>
+
+    <section class="section photo-break" id="team" data-label="Команда">
+      <img src="assets/winter-team.jpg" width="1564" height="1600" alt="Разновозрастная команда лагеря во время зимней смены" loading="lazy">
+      <div class="wrap photo-break__caption reveal">
+        <p class="eyebrow">03 · Единица среды</p>
+        <h2>Команда важнее возраста</h2>
+        <p>Дети от 7 до 17 лет объединяются в смешанные группы. Капитана и помощников выбирают из числа участников — роль становится способом учиться, а не наградой после обучения.</p>
+      </div>
+    </section>
+
+    <section class="section story" id="mechanisms" data-label="Механизмы">
+      <div class="story__layout">
+        <div class="story__visual" aria-hidden="true">
+          <img class="is-active" data-scene-image="0" src="assets/ball-play.jpg" width="1564" height="1600" alt="">
+          <img data-scene-image="1" src="assets/camp-team.jpg" width="1564" height="1600" alt="">
+          <img data-scene-image="2" src="assets/winter-team.jpg" width="1564" height="1600" alt="">
+        </div>
+        <div class="story__steps">
+          <article class="story-card is-active" data-scene="0">
+            <span class="story-card__no">01</span><h3>Выбор создаёт личную ставку</h3>
+            <p>Участник выбирает мастер-класс и лабораторию, может сменить направление через семь дней и живёт в комнате по собственному выбору.</p>
+            <div class="story-card__detail"><span><b>Наблюдаемое действие</b>Выбирает и объясняет решение</span><span><b>Рабочая гипотеза</b>Растёт ощущение авторства</span></div>
+          </article>
+          <article class="story-card" data-scene="1">
+            <span class="story-card__no">02</span><h3>Авторство превращает навык в опыт</h3>
+            <p>Даже семилетний ребёнок может провести мастер-класс при поддержке вожатого. Проекты, концерты и сценки создаются самими детьми.</p>
+            <div class="story-card__detail"><span><b>Наблюдаемое действие</b>Создаёт, объясняет, распределяет роли</span><span><b>Рабочая гипотеза</b>Развивается уверенность в действии</span></div>
+          </article>
+          <article class="story-card" data-scene="2">
+            <span class="story-card__no">03</span><h3>Разновозрастность создаёт социальную лестницу</h3>
+            <p>Младшие видят ближайшую следующую роль. Старшие становятся капитанами и помощниками вожатых — по 3–5 человек за смену.</p>
+            <div class="story-card__detail"><span><b>Наблюдаемое действие</b>Просит помощь и помогает другим</span><span><b>Рабочая гипотеза</b>Усиливается чувство принадлежности</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section lens pad" id="lens" data-label="Теория">
+      <div class="wrap">
+        <div class="lens__head reveal">
+          <div><p class="eyebrow">04 · Исследовательская линза</p><h2>Три потребности — три механизма</h2></div>
+          <div><p class="lead">Практики лагеря можно аналитически сопоставить с теорией самодетерминации: автономией, компетентностью и связанностью.</p><p class="fine" style="margin-top:18px">Это интерпретация, а не доказательство эффекта программы.</p></div>
+        </div>
+        <div class="lens__panel reveal">
+          <div class="lens__tabs" role="tablist" aria-label="Компоненты модели">
+            <button class="lens__tab" id="tab-autonomy" role="tab" aria-selected="true" aria-controls="panel-autonomy" data-tab="autonomy">Автономия</button>
+            <button class="lens__tab" id="tab-competence" role="tab" aria-selected="false" aria-controls="panel-competence" data-tab="competence">Компетентность</button>
+            <button class="lens__tab" id="tab-relatedness" role="tab" aria-selected="false" aria-controls="panel-relatedness" data-tab="relatedness">Связанность</button>
+          </div>
+          <div class="lens__content">
+            <div class="is-active" id="panel-autonomy" role="tabpanel" aria-labelledby="tab-autonomy" data-panel="autonomy">
+              <h3>«Я выбираю действие»</h3><p style="margin-top:22px">Не отсутствие границ, а возможность влиять на маршрут внутри понятной структуры.</p>
+              <div class="lens__mapping"><span>Выбор лаборатории и роли</span><i>→</i><span>Гипотеза: больше внутренней мотивации</span></div>
+            </div>
+            <div id="panel-competence" role="tabpanel" aria-labelledby="tab-competence" data-panel="competence">
+              <h3>«Я могу сделать»</h3><p style="margin-top:22px">Задача становится развивающей, когда сложность растёт вместе с поддержкой и есть видимый результат.</p>
+              <div class="lens__mapping"><span>Мастер-класс, проект, выступление</span><i>→</i><span>Гипотеза: растёт самоэффективность</span></div>
+            </div>
+            <div id="panel-relatedness" role="tabpanel" aria-labelledby="tab-relatedness" data-panel="relatedness">
+              <h3>«Я нужен другим»</h3><p style="margin-top:22px">Смешанная команда создаёт связи, в которых можно быть учеником, партнёром и наставником.</p>
+              <div class="lens__mapping"><span>Капитанство и взаимопомощь</span><i>→</i><span>Гипотеза: крепнет принадлежность</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="fine" style="margin-top:35px">Основание модели: R. Ryan, E. Deci, 2000 — Self-Determination Theory. DOI: <a href="https://doi.org/10.1037/0003-066X.55.1.68" target="_blank" rel="noopener">10.1037/0003-066X.55.1.68</a>.</p>
+      </div>
+    </section>
+
+    <section class="section rhythm pad" id="rhythm" data-label="Ритм дня">
+      <div class="wrap rhythm__grid">
+        <div class="rhythm__sticky reveal"><p class="eyebrow">05 · Микродизайн дня</p><h2>Выбор. Действие. Рефлексия.</h2><p class="lead" style="margin-top:26px">Цикл повторяется ежедневно. За счёт повторения самостоятельность становится не отдельным событием, а привычной формой участия.</p></div>
+        <div class="rhythm__rail">
+          <article class="moment reveal"><time>Утро</time><h3>Сформулировать намерение</h3><p>Тема одноминутного вечернего выступления объявляется заранее и связывается с общей темой смены.</p><ul><li>понять тему</li><li>выбрать позицию</li><li>собрать материал</li></ul></article>
+          <article class="moment reveal"><time>День</time><h3>Проверить себя действием</h3><p>Лаборатории, спортивные, творческие и командные форматы дают разные способы войти в задачу.</p><ul><li>работать в команде</li><li>провести мастер-класс</li><li>создать проект или сцену</li></ul></article>
+          <article class="moment reveal"><time>Вечер</time><h3>Сделать опыт видимым</h3><p>Одна минута публичной речи требует выбрать главное, оформить мысль и выдержать внимание аудитории.</p><ul><li>сжать опыт в тезис</li><li>сказать вслух</li><li>получить социальную обратную связь</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section role pad" id="roles" data-label="Траектория">
+      <div class="wrap">
+        <p class="eyebrow reveal">06 · Длинная траектория участия</p>
+        <h2 class="reveal">Ребёнок растёт не только по возрасту — по роли</h2>
+        <div class="role__ladder reveal">
+          <article class="role-step"><span class="role-step__no">01</span><div><h3>Участник</h3><p>Пробует форматы, выбирает лабораторию, учится просить поддержку.</p></div></article>
+          <article class="role-step"><span class="role-step__no">02</span><div><h3>Автор</h3><p>Ведёт мастер-класс, защищает проект, готовит выступление.</p></div></article>
+          <article class="role-step"><span class="role-step__no">03</span><div><h3>Капитан</h3><p>Помогает группе договориться и распределить обязанности.</p></div></article>
+          <article class="role-step"><span class="role-step__no">04</span><div><h3>Помощник</h3><p>Берёт часть взрослой ответственности, оставаясь внутри поддерживающей среды.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section model pad" id="model" data-label="Модель">
+      <div class="wrap model__grid">
+        <div class="model__copy reveal"><p class="eyebrow">07 · Концептуальная модель</p><h2>Среда сильнее отдельной активности</h2><p class="lead">Если выбор, посильный вызов и отношения встроены в ежедневный цикл, они могут поддерживать самостоятельное действие.</p></div>
+        <div class="model__diagram reveal" role="img" aria-label="Выбор, действие и команда окружают ядро самостоятельности">
+          <div class="model__orbit"></div><div class="model__core">Само&shy;стоятельность</div>
+          <span class="model__node">Выбор<br>маршрута</span><span class="model__node">Действие<br>с результатом</span><span class="model__node">Команда<br>и роль</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section method pad" id="method" data-label="Измерение">
+      <div class="wrap">
+        <div class="method__head reveal"><div><p class="eyebrow">08 · Как превратить практику в исследование</p><h2>Пять наблюдаемых индикаторов</h2></div><p class="lead">Следующий шаг — измерять изменения до и после смены и сопоставлять самоотчёт ребёнка с наблюдением педагогов.</p></div>
+        <div class="method__grid reveal">
+          <article class="method-card"><b>Выбор</b><p>Может ли ребёнок назвать решение и объяснить его основание?</p><small>мини-интервью</small></article>
+          <article class="method-card"><b>Инициатива</b><p>Как часто предлагает действие без прямой инструкции взрослого?</p><small>карта наблюдений</small></article>
+          <article class="method-card"><b>Команда</b><p>Просит ли помощь, предлагает ли её и договаривается ли о ролях?</p><small>рубрика поведения</small></article>
+          <article class="method-card"><b>Речь</b><p>Насколько яснее становится одноминутное выступление к концу смены?</p><small>единая шкала</small></article>
+          <article class="method-card"><b>Возврат</b><p>Возвращается ли ребёнок и какую следующую роль выбирает?</p><small>когортный учёт</small></article>
+        </div>
+        <p class="fine" style="margin-top:24px">Рекомендуемый дизайн: входное и выходное измерение, единые критерии наблюдения, согласие родителей, анонимизированные данные и фиксация возраста/числа смен.</p>
+      </div>
+    </section>
+
+    <section class="section boundary pad" id="boundary" data-label="Границы">
+      <div class="wrap">
+        <p class="eyebrow reveal">09 · Научная честность</p><h2 class="reveal">Что уже видно — и что ещё нельзя утверждать</h2>
+        <div class="boundary__grid reveal">
+          <article class="boundary-card"><h3>Практика показывает</h3><ul><li>многолетнюю устойчивость формата</li><li>высокую долю повторного участия по внутренним данным</li><li>реальную передачу детям задач и ролей</li><li>повторяющийся цикл выбора, действия и речи</li></ul></article>
+          <article class="boundary-card boundary-card--future"><h3>Исследование должно проверить</h3><ul><li>меняется ли самостоятельность за смену</li><li>какие механизмы дают наибольший вклад</li><li>как эффект зависит от возраста и числа смен</li><li>сохраняются ли изменения после возвращения домой</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section finale" id="finale" data-label="Вывод">
+      <img src="assets/camp-team.jpg" width="1564" height="1600" alt="Команда детей после совместной программы языкового лагеря" loading="lazy">
+      <div class="wrap finale__content reveal">
+        <p class="eyebrow">10 · Главный вывод</p>
+        <h2>Не подготовить ребёнка к жизни. Дать ему место жить сейчас.</h2>
+        <div class="finale__footer"><span>Екатерина Предаченко · ЦМО «Язык Плюс» · Чебоксары</span><span>Образовательный лагерь как среда самостоятельности</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const progressBar = document.querySelector('#progressBar');
+      const heroMedia = document.querySelector('#heroMedia');
+      const sections = [...document.querySelectorAll('.section')];
+      const sectionIndex = document.querySelector('#sectionIndex');
+      let ticking = false;
+
+      const updateScroll = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        const y = scrollY;
+        progressBar.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+        if (!reduced && y < innerHeight * 1.2) heroMedia.style.transform = `translate3d(0,${y * .12}px,0) scale(${1 + y * .000035})`;
+        ticking = false;
+      };
+      addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateScroll); ticking = true; } }, {passive:true});
+      updateScroll();
+
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); revealObserver.unobserve(entry.target); } });
+      }, {threshold:.12, rootMargin:'0px 0px -7%'});
+      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+      const sectionObserver = new IntersectionObserver(entries => {
+        const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];
+        if (!visible) return;
+        const i = sections.indexOf(visible.target) + 1;
+        sectionIndex.textContent = `${String(i).padStart(2,'0')} / ${String(sections.length).padStart(2,'0')}`;
+      }, {threshold:[.25,.5,.75]});
+      sections.forEach(s => sectionObserver.observe(s));
+
+      const countObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target, target = Number(el.dataset.count);
+          if (reduced) { el.textContent = target; return; }
+          const start = performance.now(), duration = 1100;
+          const frame = now => {
+            const p = Math.min(1,(now-start)/duration);
+            el.textContent = Math.round(target*(1-Math.pow(1-p,3)));
+            if (p < 1) requestAnimationFrame(frame);
+          };
+          requestAnimationFrame(frame); countObserver.unobserve(el);
+        });
+      }, {threshold:.8});
+      document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
+
+      const sceneCards = [...document.querySelectorAll('[data-scene]')];
+      const sceneImages = [...document.querySelectorAll('[data-scene-image]')];
+      const sceneObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const index = entry.target.dataset.scene;
+          sceneCards.forEach(el => el.classList.toggle('is-active', el.dataset.scene === index));
+          sceneImages.forEach(el => el.classList.toggle('is-active', el.dataset.sceneImage === index));
+        });
+      }, {threshold:.55});
+      sceneCards.forEach(el => sceneObserver.observe(el));
+
+      const tabs = [...document.querySelectorAll('[data-tab]')];
+      const panels = [...document.querySelectorAll('[data-panel]')];
+      const activateTab = tab => {
+        const key = tab.dataset.tab;
+        tabs.forEach(btn => btn.setAttribute('aria-selected', String(btn === tab)));
+        panels.forEach(panel => panel.classList.toggle('is-active', panel.dataset.panel === key));
+      };
+      tabs.forEach((tab,index) => {
+        tab.addEventListener('click', () => activateTab(tab));
+        tab.addEventListener('keydown', event => {
+          if (!['ArrowLeft','ArrowRight'].includes(event.key)) return;
+          event.preventDefault();
+          const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+          tabs[next].focus(); activateTab(tabs[next]);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
